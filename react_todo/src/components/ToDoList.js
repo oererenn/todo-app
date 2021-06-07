@@ -5,13 +5,19 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { ToDoContext } from '../contexts/ToDoContext'
 import Item from './Item'
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
-
+function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 
 export default function ToDoList() {
     const [todos, setTodos] = useContext(ToDoContext);
     const [checked, setChecked] = useState(false);
+    const [err, setError] = useState(false);
+    const [success, setSuccess] = useState(false);
     const handleEditTodos = (editvalue, id) => {
         const newTodos = [...todos]
         newTodos.forEach((todo, index) => {
@@ -35,7 +41,18 @@ export default function ToDoList() {
 
     const handleDeletion = () => {
         const currentTasks = todos.filter(todo => todo.completed === false)
-        setTodos(currentTasks)
+        const completedtasks = todos.filter(todo => todo.completed === true)
+
+        if ((currentTasks.length > 0 || todos.length > 0) && !(completedtasks.length === 0)) {
+
+            setTodos(currentTasks)
+            setError(false);
+            setSuccess(true)
+        } else {
+            setError(true);
+
+        }
+
     }
 
     const handleCheckAll = () => {
@@ -53,6 +70,16 @@ export default function ToDoList() {
         }
         setTodos(newTodos)
     }
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setError(false);
+        setSuccess(false);
+
+    };
 
     return (
         <div className="todo-list">
@@ -78,6 +105,16 @@ export default function ToDoList() {
                     <DeleteForeverIcon style={{ color: '#303F9F' }} />
                 </IconButton></div>
             </div>
+            <Snackbar open={err} autoHideDuration={2000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="error">
+                    Please select a task/s to remove
+        </Alert>
+            </Snackbar>
+            <Snackbar open={success} autoHideDuration={2000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="success">
+                    Succsessfully removed the task/s!
+        </Alert>
+            </Snackbar>
         </div>
     );
 }

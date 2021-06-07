@@ -15,23 +15,38 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+
+
 export default function UserFormInput() {
     const classes = useStyles();
     const [todos, setTodos] = useContext(ToDoContext);
-    const { register, handleSubmit, reset} = useForm();
+    const [helperText, setHelperText] = useState('')
+    const { register, handleSubmit, reset } = useForm();
+    const [error, setError] = useState(false);
 
     const onSubmit = data => {
-        setTodos([...todos, { description: data.description, completed: false }]);
-        reset()
+        if (data.description === "" || data.description === null || data.description === undefined) {
+            setError(true)
+            setHelperText("Please enter a task")
+        } else {
+            setError(false)
+            setHelperText("")
+            setTodos([...todos, { description: data.description, completed: false }]);
+            reset()
+        }
     };
 
     return (
         <div className="form-input">
             <form onSubmit={handleSubmit(onSubmit)} className={classes.root} noValidate autoComplete="off" required>
                 <div>
-                    <TextField {...register('description', { required: true })} id="description" label="Enter a task" required />
+                    <TextField error={error} helperText={helperText} {...register('description')} id="description" label="Enter a task" />
                 </div>
-                <Button type="submit" variant="contained" size="small" color="primary" className={classes.margin}>Add</Button>
+
+                <Button type="submit" variant="contained" size="small" color="primary" className={classes.margin}>
+                    Add
+      </Button>
+
             </form>
         </div>
 
