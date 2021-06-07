@@ -55,13 +55,15 @@ export default function ToDoList() {
     }
 
     return (
-        <div>
-            {
-                todos.map((todo, index) => (
-                    <Item todo={todo} key={index} id={index} handleEditTodos={handleEditTodos} handleCompleteCheck={handleCompleteCheck} />
-                ))
+        <div className="todo-list">
+            <div className="todo-item">
+                {
+                    todos.map((todo, index) => (
+                        <Item todo={todo} key={index} id={index} handleEditTodos={handleEditTodos} handleCompleteCheck={handleCompleteCheck} />
+                    ))
 
-            }
+                }
+            </div>
             <div className="bottom-nav">
                 <div className="checkbx"><FormControlLabel
                     value="start"
